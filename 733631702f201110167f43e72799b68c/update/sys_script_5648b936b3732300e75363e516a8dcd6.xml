@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>true</action_insert>
+        <action_query>false</action_query>
+        <action_update>true</action_update>
+        <active>true</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>cmdb_ci</collection>
+        <condition>!current.duplicate_of.nil()</condition>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition table="cmdb_ci">duplicate_ofVALCHANGES^EQ<item endquery="false" field="duplicate_of" goto="false" newquery="false" operator="VALCHANGES" or="false" value=""/>
+            <item endquery="true" field="" goto="false" newquery="false" operator="=" or="false" value=""/>
+        </filter_condition>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>Validate Duplicate Of CI</name>
+        <order>500</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[var unknownMasterSysID = "8fbc3c053bc07300b924874064efc4ae";
+ensureValidDuplicateOfValue();
+
+function ensureValidDuplicateOfValue() {
+	
+	if (current == unknownMasterSysID) {
+		current.setAbortAction(true);
+		gs.addErrorMessage(gs.getMessage("Duplicate of cannot be set for this CI."));
+		return;
+	}
+
+	if (current.duplicate_of == current.sys_id) {
+		current.setAbortAction(true);
+		gs.addErrorMessage(gs.getMessage("The main CI that you entered sets {0} to be a duplicate of itself and therefore cannot be set.", current.getDisplayValue()));
+		return;
+	}
+	
+	var masterGr = new GlideRecord("cmdb_ci");
+	if (!masterGr.get(current.duplicate_of)) {
+		// invalid reference
+		current.setAbortAction(true);
+		gs.addErrorMessage(gs.getMessage("The main CI that you entered is invalid and therefore cannot be set. For example, an invalid sys_ID or a non-existent CI."));
+		return;
+	}
+	
+	if (current.sys_domain != masterGr.sys_domain) {
+		current.setAbortAction(true);
+		gs.addErrorMessage(gs.getMessage("The main CI {0} that you entered is from another domain and therefore cannot be set.", masterGr.getDisplayValue()));
+		return;
+	}
+
+	var masterOfMaster = masterGr.getValue('duplicate_of');
+
+	if (!gs.nil(masterOfMaster))
+		handleMasterIsAlsoDuplicate(masterGr);
+	
+}
+
+function handleMasterIsAlsoDuplicate(masterGr) {
+
+	var masterOfMaster = masterGr.getValue('duplicate_of');
+
+	if (masterOfMaster == current.sys_id) {
+		// Trying to swap the master
+		// CI  DuplicateOf     CI  DuplicateOf
+		// A               --> A   B
+		// B   A               B
+		return;
+	}
+
+	// Check if the master CI is itself a duplicate that was migrated with a master
+	// reference to the Unknown CI
+	if (masterGr.duplicate_of == unknownMasterSysID) {
+		current.setAbortAction(true);
+		gs.addErrorMessage(gs.getMessage("The main CI {0} that you entered is a duplicate CI and its main CI is unknown. Therefore it cannot be set.", masterGr.getDisplayValue()));
+		return;
+	}
+
+	
+	// set CI as duplicate of master of the provided main CI
+	current.duplicate_of = masterOfMaster;
+	
+	var msgArray = [];
+	msgArray.push(masterGr.getDisplayValue());
+	msgArray.push(masterGr.duplicate_of.getDisplayValue());
+	gs.addInfoMessage(gs.getMessage("The main CI {0} that you entered is a duplicate CI by itself, therefore its main CI {1} is set as the main CI for this CI.", msgArray));
+}]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2019-02-27 02:34:47</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path/>
+        <sys_id>5648b936b3732300e75363e516a8dcd6</sys_id>
+        <sys_mod_count>35</sys_mod_count>
+        <sys_name>Validate Duplicate Of CI</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Configuration Management (CMDB)" source="com.snc.cmdb">0a74a04f3d2230100acbff3420d737dc</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="ITSM Changes">733631702f201110167f43e72799b68c</sys_scope>
+        <sys_update_name>sys_script_5648b936b3732300e75363e516a8dcd6</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-07-05 05:42:45</sys_updated_on>
+        <template/>
+        <when>before</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=5648b936b3732300e75363e516a8dcd6"/>
+    <sys_claim action="INSERT_OR_UPDATE">
+        <claim_owner_scope display_value="ITSM Changes">733631702f201110167f43e72799b68c</claim_owner_scope>
+        <claim_timestamp>181cce1e5a20000001</claim_timestamp>
+        <metadata_update_name>sys_script_5648b936b3732300e75363e516a8dcd6</metadata_update_name>
+        <previous_claim_app_version>1.0.0</previous_claim_app_version>
+        <previous_claim_name>ITSM Changes</previous_claim_name>
+        <previous_claim_scope>733631702f201110167f43e72799b68c</previous_claim_scope>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-07-05 05:42:45</sys_created_on>
+        <sys_id>7b800ef42f601110167f43e72799b6f4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-07-05 05:42:45</sys_updated_on>
+    </sys_claim>
+    <sys_claim action="INSERT_OR_UPDATE">
+        <claim_owner_scope display_value="ITSM Changes">733631702f201110167f43e72799b68c</claim_owner_scope>
+        <claim_timestamp>181cce1e59c0000001</claim_timestamp>
+        <metadata_update_name>sys_script_5648b936b3732300e75363e516a8dcd6</metadata_update_name>
+        <previous_claim_app_version/>
+        <previous_claim_name>com.snc.cmdb</previous_claim_name>
+        <previous_claim_scope>com.snc.cmdb</previous_claim_scope>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2022-07-05 05:42:45</sys_created_on>
+        <sys_id>b3800ef42f601110167f43e72799b6f5</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2022-07-05 05:42:45</sys_updated_on>
+    </sys_claim>
+</record_update>
