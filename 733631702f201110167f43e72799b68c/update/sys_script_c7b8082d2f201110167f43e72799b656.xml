@@ -17,7 +17,7 @@
         <execute_function>false</execute_function>
         <filter_condition/>
         <is_rest>false</is_rest>
-        <message><![CDATA[<p>Test Message from BR for GitHub2</p>]]></message>
+        <message><![CDATA[<p>Test Message from BR for GitHub3</p>]]></message>
         <name>Test BR</name>
         <order>100</order>
         <priority>100</priority>
@@ -38,7 +38,7 @@
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>c7b8082d2f201110167f43e72799b656</sys_id>
-        <sys_mod_count>1</sys_mod_count>
+        <sys_mod_count>2</sys_mod_count>
         <sys_name>Test BR</sys_name>
         <sys_overrides/>
         <sys_package display_value="ITSM Changes" source="733631702f201110167f43e72799b68c">733631702f201110167f43e72799b68c</sys_package>
@@ -46,7 +46,7 @@
         <sys_scope display_value="ITSM Changes">733631702f201110167f43e72799b68c</sys_scope>
         <sys_update_name>sys_script_c7b8082d2f201110167f43e72799b656</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2022-07-07 05:06:10</sys_updated_on>
+        <sys_updated_on>2022-07-07 05:26:37</sys_updated_on>
         <template/>
         <when>before</when>
     </sys_script>
